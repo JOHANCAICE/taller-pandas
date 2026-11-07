@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Manipulación y exploración de datos con pandas</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Johan" />
+    <script src="libs/header-attrs-2.25/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <link href="libs/tile-view-0.2.6/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view-0.2.6/tile-view.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Manipulación y exploración de datos con pandas
+]
+.author[
+### Johan
+]
+
+---
+
+
+class: center, middle, inverse
+
+&lt;style&gt;
+  @import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=Fira+Code:wght@400;500;600&amp;display=swap');
+
+  /* Ajustes generales de tipografía y espaciado */
+  .remark-slide-content { 
+    font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    font-size: 22px; 
+    line-height: 1.4;
+    padding: 1.2em 3em; 
+    background-color: #FFFDF9; 
+    color: #22313F; 
+  }
+  .remark-slide-content h1 { 
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 36px; 
+    color: #1F3D59; 
+    font-weight: 700; 
+    border-left: 8px solid #F29E4C; 
+    padding-left: .35em; 
+    margin-top: 0; 
+    margin-bottom: 0.4em;
+  }
+  .remark-slide-content h2 { 
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 28px; 
+    color: #C96F12; 
+    font-weight: 600;
+    margin-top: 0.2em;
+    margin-bottom: 0.4em;
+  }
+  .remark-slide-content h3 { 
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 22px; 
+    color: #C96F12; 
+    font-weight: 600;
+    margin-top: 0.2em;
+    margin-bottom: 0.3em;
+  }
+
+  p { margin-top: 0.3em; margin-bottom: 0.5em; }
+  ul, ol { margin-top: 0.3em; margin-bottom: 0.5em; padding-left: 1.2em; }
+  li { margin-bottom: 0.25em; }
+
+  /* Portadas de sección (azul) */
+  .remark-slide-content.inverse { background-color: #1F3D59 !important; color: #FFFFFF; text-shadow: none; }
+  .inverse h1 { color: #FFFFFF !important; }
+  .inverse h2, .inverse h3 { color: #F8C48F !important; }
+  .inverse .orange { color: #F8C48F; }
+  .inverse .remark-inline-code { background: rgba(255,255,255,.15); color: #F8C48F; }
+
+  /* Diapositivas naranja */
+  .remark-slide-content.slide-naranja { background-color: #F8C48F; }
+  .slide-naranja h1 { color: #1F3D59; border-left-color: #1F3D59; }
+  .slide-naranja h2, .slide-naranja h3 { color: #1F3D59; }
+  .slide-naranja .callout { background: #FFF6EA; border-left-color: #1F3D59; }
+  .slide-naranja .remark-inline-code { background: #FFF6EA; }
+  .slide-naranja .hljs { background: #FFF6EA !important; border-left-color: #1F3D59 !important; }
+
+  /* Títulos centrados */
+  .center h1 { border-left: none; padding-left: 0; border-bottom: 5px solid #F29E4C; display: inline-block; }
+  .slide-naranja.center h1 { border-bottom-color: #1F3D59; }
+
+  /* Destacados */
+  .orange { color: #D9822B; font-weight: 700; }
+  .blue { color: #1F3D59; font-weight: 700; }
+  .gray { color: #5f6b73; }
+  .key { background: linear-gradient(transparent 58%, #FAD7A8 58%); font-weight: 700; padding: 0 .1em; }
+
+  /* Columnas equilibradas */
+  .pull-left { float: left; width: 48%; }
+  .pull-right { float: right; width: 48%; }
+  .pull-left-55 { float: left; width: 54%; }
+  .pull-right-40 { float: right; width: 42%; }
+
+  /* Cajas destacadas compactas */
+  .callout { display: block; clear: both; box-sizing: border-box; background: #FDEBD7; border-left: 6px solid #F29E4C; padding: 10px 16px; margin: 12px 0; border-radius: 8px; font-size: 0.95em; }
+  .regla { display: block; clear: both; box-sizing: border-box; background: #1F3D59; color: #FFFFFF; padding: 10px 16px; margin: 12px 0; border-radius: 8px; font-size: 0.95em; }
+  .regla .remark-inline-code { background: rgba(255,255,255,.15); color: #F8C48F; }
+
+  /* Oculta el truco de presentación al usar la tecla O */
+  body.truco-oculto .truco { display: none !important; }
+
+  /* Bloques de Código */
+  .remark-code, .remark-inline-code { font-family: 'Fira Code', Consolas, monospace; }
+  .remark-code { font-size: 17px; line-height: 1.35; position: relative; }
+  .remark-inline-code { background: #FDEBD7; color: #8A4B0F; padding: 1px 5px; border-radius: 4px; font-size: .88em; }
+  .remark-slide-content .hljs { background: #FBF3EA !important; border-left: 5px solid #F29E4C; border-radius: 8px; padding: .6em .8em; margin: 0.3em 0; }
+
+  /* Botón para copiar código */
+  .copy-code-button {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background-color: #1F3D59;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-family: 'Fira Sans', sans-serif;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s, background-color 0.2s;
+    z-index: 10;
+  }
+  .copy-code-button:hover { opacity: 1.0; background-color: #F29E4C; color: #22313F; }
+
+  /* Tablas estilizadas */
+  .remark-slide-content table { border-collapse: collapse; margin: .4em 0; font-size: .80em; width: 100%; }
+  .remark-slide-content th { background: #1F3D59; color: #FFFFFF; padding: .35em .6em; text-align: left; border: none; }
+  .remark-slide-content td { padding: .3em .6em; border: none; border-bottom: 1px solid #F3D9B8; }
+  .remark-slide-content tr:nth-child(even) td { background: #FFF6EA; }
+
+  /* Anatomía de sintaxis */
+  .anatomia { font-family: 'Fira Code', monospace; font-size: 42px; text-align: center; margin: .4em 0; }
+  .obj { background: #1F3D59; color: #FFFFFF; padding: .05em .3em; border-radius: 8px; }
+  .met { background: #F29E4C; color: #22313F; padding: .05em .3em; border-radius: 8px; }
+  .arg { background: #DCE8F2; color: #1F3D59; padding: .05em .3em; border-radius: 8px; }
+  .leyenda { text-align: center; font-size: 19px; }
+  .leyenda span { padding: .05em .5em; border-radius: 8px; margin: 0 .2em; }
+&lt;/style&gt;
+
+&lt;!-- Script (botón Copiar + ocultar truco con la tecla O). Va dentro de una imagen invisible porque los &lt;script&gt; escritos en el markdown de xaringan no se ejecutan. NO cambiar ni partir en líneas. --&gt;
+&lt;img src="x" alt="" style="display:none" onerror="(function(){if(window.trucoInit){return;}window.trucoInit=1;function ocultar(){if(!window.trucoCss){window.trucoCss=1;var st=document.createElement('style');st.innerHTML='.truco{display:none!important}';document.head.appendChild(st);}document.body.classList.add('truco-oculto');document.querySelectorAll('.truco').forEach(function(el){el.remove();});console.log('truco oculto');}'keydown keyup'.split(' ').forEach(function(t){window.addEventListener(t,function(e){if(e.key==='o'||e.key==='O'||e.code==='KeyO'){setTimeout(ocultar,50);}},true);});setInterval(function(){var n=0;document.querySelectorAll('.remark-slide-container').forEach(function(s){if(s.offsetWidth&gt;0&amp;&amp;s.offsetHeight&gt;0){n++;}});if(n&gt;1){ocultar();}},300);setTimeout(function(){document.querySelectorAll('.remark-code').forEach(function(c){if(c.querySelector('.copy-code-button')){return;}var b=document.createElement('button');b.className='copy-code-button';b.type='button';b.innerText='Copiar';b.addEventListener('click',function(){var t=c.innerText.replace(/^Copiar\n/,'');navigator.clipboard.writeText(t).then(function(){b.innerText='¡Copiado!';setTimeout(function(){b.innerText='Copiar';},2000);});});c.style.position='relative';c.appendChild(b);});},800);})()"&gt;
+
+# Manipulación y exploración de datos con pandas
+
+## Un enfoque práctico para Ingeniería Industrial
+
+.orange[Johan]
+
+.truco.callout[💡 **Truco de presentación:** Presiona la tecla **`O`** o **`o`** en cualquier momento para ver la **vista mosaico/cuadrícula** de las diapositivas.]
+
+???
+**DOCENTE:** Duración total: 90 min. Estructura: Repaso variables (5 min) · La realidad de los datos y Pandas (8 min) · Carga y Diagnóstico (18 min) · Limpieza y dtypes (22 min) · Indexación loc/iloc (10 min) · Agrupar (12 min) · Visualización y Práctica 3 (15 min).
+
+---
+class: center, middle, inverse
+
+# Ruta del taller
+
+## Conceptos base → La realidad de los datos → Carga habitual → Diagnóstico → Limpieza y Tipos → Indexación `.loc`/`.iloc` → Agrupar → Graficar
+
+&lt;br&gt;
+
+.orange[La meta no es memorizar comandos: es aprender a hacerle preguntas a una tabla.]
+
+???
+**DOCENTE:** Explicar que el taller sigue un flujo continuo con un único conjunto de datos real.
+
+---
+# ¿Qué vas a poder hacer al final?
+
+Con una tabla real de **541.909 filas**, vas a poder:
+
+--
+
+1. **Leerla** correctamente desde archivos CSV o Excel (locales o remotos).
+
+--
+
+2. **Diagnosticarla** identificando descalces de tipos (`dtypes`) y errores de origen.
+
+--
+
+3. **Limpiarla** ajustando textos, convirtiendo fechas y filtrando inconsistencias.
+
+--
+
+4. **Filtrarla y Seleccionarla** con precisión utilizando `.loc` e `.iloc`.
+
+--
+
+5. **Resumirla y Graficarla** mediante agrupaciones (`groupby`) y Matplotlib.
+
+.callout[Cada paso responde una pregunta. Las herramientas son lo de menos: importa saber **qué preguntar**.]
+
+???
+**DOCENTE:** Revelar una a una. Preguntar quiénes han trabajado con datos desordenados en Excel para conectar.
+
+---
+class: center, middle, inverse
+
+# Bloque 1
+## Conceptos clave: Variables y tipos de datos
+
+.orange[Repaso exprés · Nivelación]
+
+???
+**DOCENTE:** Pasar rápido si el grupo domina variables; centrarse en cómo el tipo afecta el comportamiento.
+
+---
+# Variable: un nombre que guarda un valor
+
+.pull-left[
+```python
+cantidad = 6
+precio = 3.39
+total = cantidad * precio
+print(total)
+```
+
+El signo `=` **no es una igualdad matemática**: es una .key[asignación]. 
+
+Primero se evalúa la derecha y el resultado se guarda con el nombre de la izquierda.
+]
+
+.pull-right[
+### Reglas de nombre:
+- Sin espacios (`precio_unitario`).
+- No inicia con números (`factura1`).
+- Distingue mayúsculas (`total` ≠ `Total`).
+
+.callout[Un buen nombre **explica lo que contiene**: prefiere `precio_unitario` sobre `x`.]
+]
+
+???
+**DOCENTE:** Hacer énfasis en la asignación. Las columnas en pandas funcionan exactamente bajo esta misma regla.
+
+---
+# Tipos de datos básicos y su comportamiento
+
+| Tipo | Qué guarda | Ejemplo | Comportamiento con `+` |
+|---|---|---|---|
+| `int` | Números enteros | `6` | Suma aritmética |
+| `float` | Números decimales | `3.39` | Suma aritmética |
+| `str` | Texto | `"WHITE METAL LANTERN"` | **Concatena (pega)** |
+| `bool` | Lógico | `True` / `False` | Operaciones lógicas |
+
+--
+
+```python
+# El tipo cambia el resultado de la operación:
+5 + 3        # Da 8  (Suma aritmética)
+"5" + "3"    # Da "53" (Concatenación de texto)
+```
+
+.callout[Un número entre comillas **ya no es un número: es texto**. Usamos `type()` para diagnosticar.]
+
+???
+**DOCENTE:** Este es el origen del 80% de los errores en pandas: columnas numéricas guardadas como texto.
+
+---
+class: center, middle, inverse
+
+# Bloque 2
+## La realidad de los datos y la necesidad de pandas
+
+???
+**DOCENTE:** Aquí inicia la transición conceptual hacia la manipulación de datos tabulares.
+
+---
+# En la realidad, los datos NUNCA llegan limpios
+
+.pull-left[
+En tablas reales de ingeniería industrial nos encontramos con:
+
+- **Nulos y vacíos:** Compras sin cliente registrado.
+- **Formatos incorrectos:** Fechas o números guardados como texto.
+- **Registros duplicados:** Errores de sistema y devoluciones.
+- **Inconsistencias:** `"Cali"`, `"Cali "` y `"CALI"`.
+]
+
+.pull-right[
+&lt;br&gt;
+.callout[No podemos aplicar fórmulas de negocio ni graficar sin antes **diagnosticar y preparar** los datos.
+
+El 80% del tiempo de análisis se invierte en esta fase.]
+]
+
+???
+**DOCENTE:** Diapositiva puente. Remarcar que el análisis real requiere preparación previa.
+
+---
+# Nuestro Caso Guía: Online Retail
+
+Analizaremos la operación de un minorista en línea del Reino Unido (transacciones entre **Dic-2010** y **Dic-2011**).
+
+.pull-left[
+### Ficha Técnica:
+- **Tamaño:** 541.909 filas y 8 columnas.
+- **Origen:** UCI Machine Learning Repository.
+- **Naturaleza:** Registros reales de facturación comercial.
+]
+
+.pull-right[
+&lt;br&gt;
+.callout[Contiene ventas válidas, cancelaciones de pedidos, valores nulos y errores de digitación. **Un escenario real.**]
+]
+
+???
+**DOCENTE:** Mencionar que trabajar con medio millón de filas demuestra la potencia de pandas frente a Excel.
+
+---
+# Estructura del dataset (8 columnas)
+
+| Columna | Significado operativo |
+|---|---|
+| `InvoiceNo` | Código de factura (si inicia con **C**, es cancelación) |
+| `StockCode` | Código del producto |
+| `Description` | Descripción del artículo |
+| `Quantity` | Cantidad comprada (valores negativos = devolución) |
+| `InvoiceDate` | Fecha y hora exacta de la transacción |
+| `UnitPrice` | Precio unitario en libras esterlinas (£) |
+| `CustomerID` | Identificador único del cliente |
+| `Country` | País de residencia del cliente |
+
+.callout[Una misma factura puede abarcar **múltiples filas**: una por cada producto distinto.]
+
+---
+# ¿Qué es pandas y cómo se compara con Excel?
+
+**pandas** es la librería estándar de Python para manipular .key[datos tabulares] (`DataFrame`).
+
+| Concepto | En Excel | En pandas | Ventaja de pandas |
+|---|---|---|---|
+| Tabla completa | Hoja de cálculo | `DataFrame` | Procesa millones de filas sin congelarse |
+| Columna | Columna | `Series` | Operaciones vectorizadas instantáneas |
+| Formato de celda | Tipo de celda | `dtype` | Control estricto del tipo de dato |
+| Trazabilidad | Manual / Macros | Código ejecutable | 100% reproducible y auditable |
+
+```python
+import pandas as pd
+```
+
+???
+**DOCENTE:** Explicar `import pandas as pd`. El alias `pd` es la convención universal.
+
+---
+class: center, middle, inverse
+
+# Bloque 3
+## Carga de datos y exploración inicial
+
+???
+**DOCENTE:** Tiempo estimado: 18 minutos (incluye la diapositiva de atributo vs. método). Explicar carga local estándar y luego Kaggle/Colab. Plan B: tener el CSV ya descargado por si Kaggle falla.
+
+---
+# ¿Cómo se carga un archivo normalmente?
+
+.pull-left[
+### 1. Desde tu equipo o entorno local (CSV/Excel)
+
+```python
+import pandas as pd
+
+# Cargar un archivo CSV estándar
+df = pd.read_csv("mis_datos.csv")
+
+# Si usa punto y coma (;) como separador
+df = pd.read_csv("datos.csv", sep=";")
+
+# Leer una hoja específica de Excel
+df = pd.read_excel("reporte.xlsx", sheet_name="Ventas")
+```
+]
+
+.pull-right[
+### 2. Desde Google Colab (Subida manual)
+
+```python
+from google.colab import files
+files.upload() # Eliges el archivo de tu PC
+
+df = pd.read_csv("archivo_subido.csv")
+```
+
+.callout[**Parámetros clave de `read_csv`:**
+- `encoding="utf-8"` (o `"ISO-8859-1"`)
+- `sep=","` (separador de columnas)
+- `decimal="."` (separador decimal)
+]
+]
+
+???
+**DOCENTE:** Resaltar que en la práctica profesional la mayoría de datos vienen en CSV o Excel guardados localmente.
+
+---
+# Cargar nuestro dataset guía desde Kaggle
+
+.pull-left-55[
+```python
+# Instalación del conector oficial
+!pip install -q kagglehub
+
+import kagglehub
+import pandas as pd
+
+# Descargar archivo fuente
+ruta = kagglehub.dataset_download(
+    "carrie1/ecommerce-data"
+)
+
+# Leer CSV especificado la codificación
+df = pd.read_csv(
+    f"{ruta}/data.csv", 
+    encoding="ISO-8859-1"
+)
+```
+]
+
+.pull-right-40[
+### ¿Por qué `encoding`?
+
+.callout[Usamos `encoding="ISO-8859-1"` porque los datos contienen caracteres especiales que el codificador por defecto (`UTF-8`) rechaza.]
+]
+
+???
+**DOCENTE:** Mostrar qué ocurre si omiten el `encoding`: aparece `UnicodeDecodeError`. Enseñar a resolverlo.
+
+---
+# Paso 2: El ritual del diagnóstico inicial
+
+.pull-left-55[
+```python
+# 1. Dimensiones de la tabla (Atributo)
+df.shape          
+
+# 2. Primeros registros (Método)
+df.head(3)        
+
+# 3. Tipos detectados por pandas
+df.info()         
+
+# 4. Resumen de variables numéricas
+df.describe()     
+
+# 5. Conteo de faltantes por columna
+df.isna().sum()   
+```
+]
+
+.pull-right-40[
+### Regla de oro:
+
+.regla[Primero va el **objeto** (`df`), después el **método** (`.info()`) o el **atributo** (`.shape`).]
+
+Antes de filtrar o calcular, **siempre conocemos la estructura**.
+]
+
+???
+**DOCENTE:** Explicar la diferencia entre atributo (propiedad, sin paréntesis) y método (acción, con paréntesis). La siguiente diapositiva profundiza en esto.
+
+---
+# Atributo vs. método: ¿con o sin paréntesis?
+
+.pull-left[
+### Atributo → **sin** paréntesis
+Una **característica** que el objeto ya tiene guardada. Solo se consulta.
+
+```python
+df.shape      # (541909, 8)
+df.columns
+df.dtypes
+```
+]
+
+.pull-right[
+### Método → **con** paréntesis
+Una **acción** que el objeto ejecuta. Puede recibir argumentos.
+
+```python
+df.head(3)
+df.info()
+df.isna().sum()
+```
+]
+
+| | Atributo | Método |
+|---|---|---|
+| **Pregunta que responde** | ¿Cómo es? | ¿Qué hace? |
+| **Paréntesis** | No | Sí `()` |
+| **Analogía** | `carro.color` | `carro.acelerar()` |
+
+.callout[⚠️ **Errores típicos:** `df.shape()` → `TypeError: 'tuple' object is not callable`. Y `df.info` (sin paréntesis) no ejecuta nada: solo muestra `&lt;bound method ...&gt;`.]
+
+???
+**DOCENTE:** Pedir que predigan qué ocurre con `df.shape()` y con `df.info` antes de ejecutarlos. Regla mnemotécnica: si **calcula o hace algo**, lleva paréntesis; si **describe algo que ya existe**, no. Tiempo estimado: 3 min.
+
+---
+# Anatomía de la sintaxis en pandas
+
+&lt;div class="anatomia"&gt;&lt;span class="obj"&gt;objeto&lt;/span&gt;.&lt;span class="met"&gt;método&lt;/span&gt;&lt;span class="arg"&gt;(argumentos)&lt;/span&gt;&lt;/div&gt;
+
+--
+
+&lt;div class="anatomia"&gt;&lt;span class="obj"&gt;df&lt;/span&gt;.&lt;span class="met"&gt;head&lt;/span&gt;&lt;span class="arg"&gt;(5)&lt;/span&gt;&lt;/div&gt;
+
+&lt;div class="leyenda"&gt;&lt;span class="obj"&gt;Tabla / Columna&lt;/span&gt;&lt;span class="met"&gt;Acción a realizar&lt;/span&gt;&lt;span class="arg"&gt;Parámetros&lt;/span&gt;&lt;/div&gt;
+
+--
+
+### Ejemplo de lectura encadenada de izquierda a derecha:
+```python
+df["Country"].value_counts()
+```
+.gray[→ De la tabla `df`, toma la columna `Country` y cuenta la frecuencia de cada país.]
+
+---
+class: slide-naranja
+
+# Práctica 1 · 5 min
+
+Con el dataset `df` cargado en la celda:
+
+1. Ejecuta `df.info()` e identifica el `dtype` original de `InvoiceDate` y `CustomerID`.
+2. Corre `df.isna().sum()`. ¿Cuáles son las dos columnas con valores nulos?
+3. Revisa `df.describe()`. ¿Qué encuentras de extraño en los valores mínimos de `Quantity` y `UnitPrice`?
+
+???
+**DOCENTE:** Cronometrar 5 min. Hallazgos esperados: `InvoiceDate` es `object` (texto), `CustomerID` tiene +135k nulos y es `float64`, hay valores negativos en `Quantity` y `UnitPrice`.
+
+---
+class: center, middle, inverse
+
+# Bloque 4
+## Exploración de `dtypes` y Limpieza de Datos
+
+.orange[Diagnóstico de problemas → Normalización → Conversión de tipos]
+
+???
+**DOCENTE:** Bloque central del taller. Coincide con la Parte 4 del material de referencia.
+
+---
+# Hallazgos del diagnóstico en `Online Retail`
+
+Al inspeccionar los datos descubrimos **4 problemas críticos**:
+
+| Columna | Problema detectado | Tipo actual | Tipo correcto requerido |
+|---|---|---|---|
+| `InvoiceDate` | Está guardada como texto puro | `object` | `datetime64` |
+| `CustomerID` | Tiene decimales (`17850.0`) por culpa de los `NaN` | `float64` | `Int64` (entero con nulos) |
+| `Description` | Contiene espacios extras y desorden de mayúsculas | `object` | `string` limpio |
+| `Quantity` / `UnitPrice` | Existen valores negativos y precios iguales a cero | Numérico | Filtro de registros válidos |
+
+.callout[El tipo de dato `object` indica texto o mezcla de datos. Debe convertirse para poder operar.]
+
+---
+# 1. Tratamiento de textos en columnas `str`
+
+.pull-left[
+```python
+# Normalización de textos
+df["Description"] = (
+    df["Description"]
+    .astype("string")
+    .str.strip()
+    .str.title()
+)
+```
+]
+
+.pull-right[
+### Métodos `.str`:
+- `.str.strip()`: Elimina espacios al inicio y al final.
+- `.str.title()`: Convierte a formato Título (`"White Metal Lantern"`).
+
+.callout[Sin esta limpieza, `"WHITE METAL"` y `"WHITE METAL "` se procesan como productos distintos.]
+]
+
+---
+# 2. Conversión formal de tipos de datos (`dtypes`)
+
+.pull-left[
+```python
+# Convertir texto a fecha real
+df["InvoiceDate"] = pd.to_datetime(
+    df["InvoiceDate"], 
+    errors="coerce"
+)
+
+# Convertir ID a entero con nulos
+df["CustomerID"] = df["CustomerID"].astype("Int64")
+```
+]
+
+.pull-right[
+### ¿Por qué `Int64` con mayúscula?
+
+El tipo estándar `int64` de Python no tolera nulos (`NaN`). 
+
+Usamos `Int64` (de pandas) para conservar enteros manteniendo los nulos sin decimales.
+
+.callout[Con `datetime64`, habilitamos el accesor `.dt` (mes, año, hora). Ojo: `errors="coerce"` convierte en `NaT` lo que no puede leer, sin avisar. Verifica con `df["InvoiceDate"].isna().sum()`.]
+]
+
+---
+# 3. Manejo estratégico de faltantes (`NaN`)
+
+.pull-left[
+```python
+# Opción 1: Eliminar nulos marginales
+df = df.dropna(subset=["Description"])
+
+# Opción 2: Marcar los nulos sin borrar
+df["sin_cliente"] = df["CustomerID"].isna()
+```
+]
+
+.pull-right[
+### NaN no es cero
+
+| Estrategia | Cuándo aplicarla |
+|---|---|
+| `dropna()` | Registros irrecuperables |
+| Marcar (`isna()`) | Preservar datos anónimos |
+
+.callout[Borrar filas elimina información; imputar inventa datos. Elige según el negocio.]
+]
+
+---
+# 4. Seleccionar datos: `.loc` vs `.iloc`
+
+Para acceder a celdas, filas y columnas específicas usamos `.loc` o `.iloc`:
+
+.pull-left[
+### `.loc` (Basado en ETIQUETAS)
+Usa nombres de columnas y reglas lógicas (`True/False`):
+
+```python
+# Filas con condición, columnas por nombre
+df.loc[
+    df["Quantity"] &gt; 50, 
+    ["Description", "UnitPrice"]
+]
+```
+]
+
+.pull-right[
+### `.iloc` (Basado en POSICIÓN)
+Usa índices numéricos enteros (0-indexed):
+
+```python
+# Primeras 5 filas, primeras 3 columnas
+df.iloc[0:5, 0:3]
+```
+]
+
+--
+
+| Selector | ¿Cómo busca las filas? | ¿Cómo busca las columnas? | Ejemplo típico |
+|---|---|---|---|
+| **`.loc`** | Nombre del índice o condición booleana | Nombre exacto (`"UnitPrice"`) | `df.loc[df["Country"]=="France", :]` |
+| **`.iloc`** | Número entero de fila (`0:10`) | Número entero de columna (`0:4`) | `df.iloc[0:10, [0, 2, 5]]` |
+
+.callout[Regla práctica: **Usa `.loc` para reglas de negocio** (filtros) y **`.iloc` para recortes por posición**. En el siguiente paso usaremos `.loc` para crear `ventas`.]
+
+---
+# 5. Eliminación de duplicados y filtrado final
+
+.pull-left-55[
+```python
+# Eliminar filas idénticas
+df = df.drop_duplicates()
+
+# Filtrar ventas efectivas con .loc
+ventas = df.loc[
+    (df["Quantity"] &gt; 0) &amp; 
+    (df["UnitPrice"] &gt; 0)
+].copy()
+
+# Separar cancelaciones
+canceladas = df.loc[
+    df["InvoiceNo"]
+    .astype("string")
+    .str.startswith("C")
+].copy()
+```
+]
+
+.pull-right-40[
+### Operadores Lógicos:
+
+.regla[En pandas usamos:
+- `&amp;` para **AND**
+- `|` para **OR**
+- `~` para **NOT**
+
+Cada condición **debe ir entre paréntesis**.]
+]
+
+???
+**DOCENTE:** Explicar por qué falla usarse `and` o `or` en pandas (evalúan la serie completa, no elemento a elemento). Desde aquí se trabaja con `ventas`: el DataFrame se acaba de crear en esta diapositiva.
+
+---
+class: slide-naranja
+
+# Práctica 2 · 8 min
+
+Aplica el flujo de limpieza en tu notebook:
+
+1. Convierte `InvoiceDate` a fecha con `pd.to_datetime()`.
+2. Limpia `Country` usando `.str.strip()` y `.str.title()`.
+3. Crea el DataFrame `ventas` con `.loc` asegurando `Quantity &gt; 0` y `UnitPrice &gt; 0`.
+4. Selecciona con `.iloc` las primeras 5 filas y las columnas 2 a 4 de `ventas`.
+
+---
+class: center, middle, inverse
+
+# Bloque 5
+## Agrupación y resúmenes con `groupby`
+
+.orange[Cambiar la unidad de análisis para responder preguntas de negocio]
+
+---
+# El patrón Dividir - Aplicar - Combinar
+
+.pull-left-55[
+```python
+# Crear columna de ingreso total
+ventas["TotalSales"] = (
+    ventas["Quantity"] * ventas["UnitPrice"]
+)
+
+# ¿Top 5 países por ventas?
+resumen_pais = (
+    ventas
+    .groupby("Country")["TotalSales"]
+    .sum()
+    .sort_values(ascending=False)
+    .head(5)
+)
+```
+]
+
+.pull-right-40[
+### Paso a paso:
+1. `groupby("Country")`: Separa los datos por país.
+2. `["TotalSales"]`: Elige la columna numérica.
+3. `.sum()`: Suma cada grupo.
+4. `.sort_values()`: Ordena los resultados.
+]
+
+---
+# Resúmenes con múltiples agregaciones (`.agg()`)
+
+.pull-left-55[
+```python
+resumen_completo = ventas.groupby("Country").agg(
+    ingreso_total=("TotalSales", "sum"),
+    precio_promedio=("UnitPrice", "mean"),
+    total_pedidos=("InvoiceNo", "nunique")
+).reset_index().head(5)
+
+print(resumen_completo)
+```
+]
+
+.pull-right-40[
+### Sintaxis de `.agg()`
+
+Con `.agg()` asignamos nombres claros mediante tuplas:
+
+`nombre_nuevo = ("col_origen", "función")`
+
+.callout[Usamos `.reset_index()` para volver a convertir el grupo en una columna estándar.]
+]
+
+???
+**DOCENTE:** Mostrar cómo `reset_index()` vuelve a convertir el índice del grupo en una columna estándar.
+
+---
+class: center, middle, inverse
+
+# Bloque 6
+## Visualización de resultados con Matplotlib
+
+.orange[De tablas agregadas a gráficos para toma de decisiones]
+
+???
+**DOCENTE:** Tiempo estimado: 15 min (7 de explicación + 8 de Práctica 3).
+
+---
+# Graficar directamente desde pandas + matplotlib
+
+.pull-left-55[
+```python
+import matplotlib.pyplot as plt
+
+# 1. Preparar agregación
+top_prod = ventas.groupby("Description")["Quantity"].sum().nlargest(8)
+
+# 2. Generar gráfico
+plt.figure(figsize=(8, 4))
+top_prod.plot(kind="barh", color="#1F3D59")
+
+# 3. Personalización
+plt.title("Top 8 Productos Vendidos", fontweight="bold")
+plt.xlabel("Unidades")
+plt.gca().invert_yaxis()
+plt.show()
+```
+]
+
+.pull-right-40[
+### Regla de oro visual:
+
+.callout[**Primero agrupas la tabla, luego graficas.** 
+
+Nunca pases un DataFrame completo de 500k filas directamente a la función de graficado.]
+]
+
+---
+class: slide-naranja
+
+# Práctica 3 · 8 min
+
+Con el DataFrame `ventas` y la columna `TotalSales` ya creada:
+
+1. Crea la columna `Periodo` con `ventas["InvoiceDate"].dt.to_period("M")`.
+2. Agrupa por `Periodo` y suma `TotalSales`.
+3. Grafica el resultado en barras.
+4. Responde: ¿qué mes vendió más? ¿Qué pasa con el último mes?
+
+.callout[**Pista:** el patrón es el mismo de la diapositiva anterior: **primero agrupas, luego graficas**.]
+
+???
+**DOCENTE:** Cronometrar 8 min. Solución:
+
+```python
+ventas["Periodo"] = ventas["InvoiceDate"].dt.to_period("M")
+ingreso_mes = ventas.groupby("Periodo")["TotalSales"].sum()
+
+plt.figure(figsize=(9, 4))
+ingreso_mes.plot(kind="bar", color="#1F3D59")
+plt.title("Ingreso mensual", fontweight="bold")
+plt.ylabel("Libras (£)")
+plt.xticks(rotation=45)
+plt.show()
+```
+
+Hallazgos esperados: noviembre de 2011 es el mes más fuerte (temporada navideña). Diciembre de 2011 se ve bajo porque el dataset termina el 9 de diciembre: es un mes incompleto, no una caída real. Se usa `to_period("M")` y no `.dt.month` porque con solo el número de mes, diciembre de 2010 y diciembre de 2011 se sumarían juntos.
+
+---
+class: center, middle, inverse
+
+# Cierre y resumen
+
+## Lo que aprendimos hoy
+
+---
+# Síntesis del flujo de trabajo en pandas
+
+.pull-left[
+```
+1. LEER      → pd.read_csv("datos.csv")
+2. DIAGNOST. → df.info(), df.isna().sum()
+3. TEXTOS    → df['col'].str.strip().str.title()
+4. CONVERTIR → pd.to_datetime(), astype('Int64')
+5. FILTRAR   → df.loc[(cond1) &amp; (cond2)]
+6. AGRUPAR   → df.groupby('cat').agg(...)
+7. GRAFICAR  → df_resumen.plot(kind='bar')
+```
+]
+
+.pull-right[
+### Diagnóstico rápido de errores:
+
+| Error | Solución |
+|---|---|
+| `TypeError: 'tuple' object...` | Quita los paréntesis de `df.shape` |
+| `KeyError: 'columna'` | Revisa nombres con `df.columns` |
+| `IntCastingNaNError` | Usa `astype('Int64')` con mayúscula |
+]
+
+---
+class: center, middle, inverse
+
+# ¡Gracias!
+
+### Manipulación y exploración de datos con pandas
+.orange[Johan]
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "ratio": "16:9",
+  "highlightStyle": "github",
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
