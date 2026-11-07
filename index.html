@@ -151,16 +151,6 @@ class: center, middle, inverse
 &lt;!-- Script (botón Copiar + ocultar truco con la tecla O). Va dentro de una imagen invisible porque los &lt;script&gt; escritos en el markdown de xaringan no se ejecutan. NO cambiar ni partir en líneas. --&gt;
 &lt;img src="x" alt="" style="display:none" onerror="(function(){if(window.trucoInit){return;}window.trucoInit=1;function ocultar(){if(!window.trucoCss){window.trucoCss=1;var st=document.createElement('style');st.innerHTML='.truco{display:none!important}';document.head.appendChild(st);}document.body.classList.add('truco-oculto');document.querySelectorAll('.truco').forEach(function(el){el.remove();});console.log('truco oculto');}'keydown keyup'.split(' ').forEach(function(t){window.addEventListener(t,function(e){if(e.key==='o'||e.key==='O'||e.code==='KeyO'){setTimeout(ocultar,50);}},true);});setInterval(function(){var n=0;document.querySelectorAll('.remark-slide-container').forEach(function(s){if(s.offsetWidth&gt;0&amp;&amp;s.offsetHeight&gt;0){n++;}});if(n&gt;1){ocultar();}},300);setTimeout(function(){document.querySelectorAll('.remark-code').forEach(function(c){if(c.querySelector('.copy-code-button')){return;}var b=document.createElement('button');b.className='copy-code-button';b.type='button';b.innerText='Copiar';b.addEventListener('click',function(){var t=c.innerText.replace(/^Copiar\n/,'');navigator.clipboard.writeText(t).then(function(){b.innerText='¡Copiado!';setTimeout(function(){b.innerText='Copiar';},2000);});});c.style.position='relative';c.appendChild(b);});},800);})()"&gt;
 
-# Manipulación y exploración de datos con pandas
-
-## Un enfoque práctico para Ingeniería Industrial
-
-.orange[Johan]
-
-.truco.callout[💡 **Truco de presentación:** Presiona la tecla **`O`** o **`o`** en cualquier momento para ver la **vista mosaico/cuadrícula** de las diapositivas.]
-
-???
-**DOCENTE:** Duración total: 90 min. Estructura: Repaso variables (5 min) · La realidad de los datos y Pandas (8 min) · Carga y Diagnóstico (18 min) · Limpieza y dtypes (22 min) · Indexación loc/iloc (10 min) · Agrupar (12 min) · Visualización y Práctica 3 (15 min).
 
 ---
 class: center, middle, inverse
